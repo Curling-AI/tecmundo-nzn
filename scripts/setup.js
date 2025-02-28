@@ -237,19 +237,19 @@ removeSetupFromPackageJson()
 console.log('\n🗑️  Removing post-install hook...')
 removeFile('.husky/post-install')
 
-// Commit das mudanças no git
-commitSetupChanges()
-
 // Remover o próprio arquivo de setup
 console.log('\n🗑️  Removing setup file...')
 process.on('exit', () => {
   try {
+    // Remove o próprio arquivo de setup
     fs.unlinkSync(import.meta.filename)
     console.log('✓ Setup file removed')
+
+    // Commit das mudanças no git
+    commitSetupChanges()
+    console.log('\n✨ Setup completed successfully!')
   } catch (err) {
     console.log(err)
     console.log('⚠️  Unable to remove setup file automatically')
   }
 })
-
-console.log('\n✨ Setup completed successfully!')
