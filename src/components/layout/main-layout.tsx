@@ -1,5 +1,7 @@
-import { Menu, Home, Info, Github, PlayCircle } from 'lucide-react'
+import { useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { Menu, Home, Info, Github, PlayCircle, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -36,6 +38,11 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const { mainSidebarOpen, setMainSidebarOpen } = useMainLayoutState()
   const location = useLocation()
   const isMobile = useIsMobile()
+  const { theme, setTheme } = useTheme()
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }, [theme, setTheme])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600/10 via-blue-500/10 to-teal-400/10">
@@ -117,6 +124,22 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
             {/* Right side actions */}
             <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="mr-1"
+                title={theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+                ) : (
+                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+                )}
+                <span className="sr-only">
+                  {theme === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+                </span>
+              </Button>
               <Button
                 variant="ghost"
                 size={!isMobile ? 'sm' : 'icon'}

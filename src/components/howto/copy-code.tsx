@@ -13,7 +13,7 @@ export function CopyCode({ code, className }: CopyCodeProps) {
   }
 
   return (
-    <div className={cn('relative rounded-lg border border-white/10 bg-white/5 p-4', className)}>
+    <div className={cn('relative rounded-lg border p-4', className)}>
       <div className="absolute top-8 right-6">
         <Button
           variant="ghost"
@@ -24,8 +24,8 @@ export function CopyCode({ code, className }: CopyCodeProps) {
           <Copy className="h-4 w-4" />
         </Button>
       </div>
-      <pre className="mt-2 rounded bg-zinc-950 p-2 whitespace-pre-wrap">
-        <code>{code}</code>
+      <pre className="bg-muted mt-2 rounded p-2 whitespace-pre-wrap">
+        <code className="text-foreground">{code}</code>
       </pre>
     </div>
   )

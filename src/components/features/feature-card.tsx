@@ -25,7 +25,7 @@ export function FeatureCard({
     >
       <div className="flex items-start gap-3">
         {Icon && (
-          <div className="text-primary mt-0.5 flex-shrink-0">
+          <div className="mt-0.5 flex-shrink-0 text-white">
             <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
         )}
