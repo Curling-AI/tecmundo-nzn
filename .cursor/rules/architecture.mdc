@@ -14,20 +14,21 @@ You are an expert in TypeScript, Node.js, Vite, React Router, React, Shadcn UI, 
     - [Tailwind](mdc:https:/tailwindcss.com/docs/installation/using-vite) - A utility-first CSS framework packed with classes like flex, pt-4, text-center and rotate-90 that can be composed to build any design, directly in your markup.
     - [Shadcn UI](mdc:https:/ui.shadcn.com/docs) which uses [radix UI](mdc:https:/www.radix-ui.com/themes/docs/overview/getting-started) - A set of beautifully-designed, accessible components and a code distribution platform.
     - [Zustand](mdc:https:/zustand.docs.pmnd.rs/getting-started/introduction) - A small, fast, and scalable bearbones state management solution. Zustand has a comfy API based on hooks. It isn't boilerplatey or opinionated, but has enough convention to be explicit and flux-like.
+    - [lucide-react.d.ts](mdc:node_modules/lucide-react/dist/lucide-react.d.ts) - This is the default library for icons, when using icons, always use this library.
 
 ### Folder Structure
 - You must always respect the following folder structure, if you need to create any file that are not related to the structure described bellow, infer from the whole app structure and suggest the best option:
     - `<root>/index.html` - The entry file the points to the React main component (routes and layout), main css (tailwind) and other html head tags and 3rd party scripts referencing.
     - `<root>/public/` - The public folder, all general project asset such as image, robot.txt and other public files should be put here. Files that are put here are not part of the build process.
     - `<root>/src/` - Main app folder, All app files should be put here.
-    - `<root>/src/main.tsx` - The react setup file for client rendering, it just mounts the App component.
+    - `<root>/src/main.tsx` - The react setup file for client rounting and rendering, all routes must go here in the same pattern it currently has, using lazy imports.
     - `<root>/src/index.css` - The main css file, tailwind is setup here, the main theme configuration is also here, other global styles should be put here.
     - `<root>/src/App.tsx` - The app component, where the routing is configurated and other global react context is setup.
-    - `<root>/src/pages/` - The folder where all page components go, the path structure inside this folder should reflect the `path` prop inside a `Route` componente inside the [App.tsx](mdc:src/App.tsx) component file.
-    - `<root>/src/store/` - The main application state using Zustand, the main [index.ts](mdc:src/store/index.ts) store should centralize the global application state, when this file is too small domain store files.
+    - `rc/pages/` - The folder where all page components go, the path structure inside this folder shout the `path` prop inside a `Route` componente inside the @App.tsx component file.
+    - `<root>/src/store/` - The main application state using Zustand, the main @index.ts store should centralize the global application state, when this file is too small domain store files.
     - `<root>/src/lib/` - The tools library folder, where any shared tool is located.
     - `<root>/src/hooks/` - The folder where all shared react hooks are located.
-    - `<root>/src/components/` - The shared components folder, where all shared components between pages are located.
+    - `<root>/src/components/` - The shared components folder, where all shared components between pages are located. When creating new components they should live in their own folder, following the naming convention below.
     - `<root>/src/components/ui/` - Where the primitive components live, all components from the shadcn ui component suite are located here. All other components should be derived from this primitive components.
     - `<root>/src/assets/` - Where assets referenced from components and processed through the build process are located.
 
