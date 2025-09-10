@@ -10,14 +10,6 @@ const routes: RouteProps[] = [
     path: '/',
     Component: lazy(() => import('./pages/index')),
   },
-  {
-    path: '/start',
-    Component: lazy(() => import('./pages/start')),
-  },
-  {
-    path: '/about',
-    Component: lazy(() => import('./pages/about')),
-  },
 ]
 
 const loading = (
