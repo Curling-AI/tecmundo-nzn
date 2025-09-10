@@ -1,16 +1,11 @@
-import { Suspense, lazy } from 'react'
-import { BrowserRouter as Router, Routes, Route, RouteProps } from 'react-router-dom'
+import { Suspense } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from 'next-themes'
 import { Loader2 } from 'lucide-react'
 import { Toaster } from './components/ui/sonner'
-
-const routes: RouteProps[] = [
-  {
-    index: true,
-    path: '/',
-    Component: lazy(() => import('./pages/index')),
-  },
-]
+import Layout from './components/layout/Layout'
+import Index from './pages/index'
+import KeywordAnalysis from './pages/KeywordAnalysis'
 
 const loading = (
   <div className="flex min-h-screen items-center justify-center">
@@ -24,9 +19,10 @@ function App() {
       <Router>
         <Suspense fallback={loading}>
           <Routes>
-            {routes.map((route) => (
-              <Route key={route.path} {...route} />
-            ))}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/analise-de-keywords" element={<KeywordAnalysis />} />
+            </Route>
           </Routes>
         </Suspense>
         <Toaster />
