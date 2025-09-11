@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Search } from 'lucide-react'
-import { formatDistanceToNow, isWithinInterval, endOfDay } from 'date-fns'
+import { useState } from 'react'
+import { Search, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Input } from '@/components/ui/input'
 import {
@@ -16,114 +16,74 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ArticleDetails } from '@/components/ArticleDetails'
 import { AppPagination } from '@/components/AppPagination'
-import { MOCK_ARTICLES } from '@/lib/mock-data'
 import { Article } from '@/types'
 import { cn } from '@/lib/utils'
 import { RegionFilter } from '@/components/RegionFilter'
-import { ArticleCard } from '@/components/ArticleCard'
+import { ArticleCard, getScoreColor } from '@/components/ArticleCard'
 import { useDateFilter } from '@/store/dateFilter'
+import { useIntelligentPagination } from '@/hooks/useIntelligentPagination'
 
 const ITEMS_PER_PAGE = 10
 
-const getScoreColor = (score: number) => {
-  if (score > 90) return 'bg-secondary text-secondary-foreground'
-  if (score > 80) return 'bg-primary text-primary-foreground'
-  return 'bg-muted text-muted-foreground'
-}
-
 const Index = () => {
-  const [allArticles, setAllArticles] = useState<Article[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
   const [selectedRegion, setSelectedRegion] = useState('all')
   const { date } = useDateFilter()
 
-  useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => {
-      let filtered = MOCK_ARTICLES
-
-      // Date filter
-      if (date?.from) {
-        filtered = filtered.filter((article) => {
-          const articleDate = new Date(article.publishedAt)
-          const toDate = date.to ? endOfDay(date.to) : endOfDay(date.from!)
-          return isWithinInterval(articleDate, {
-            start: date.from!,
-            end: toDate,
-          })
-        })
-      }
-
-      // Search filter
-      filtered = filtered.filter(
-        (article) =>
-          article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          article.keywords.some((k) => k.toLowerCase().includes(searchTerm.toLowerCase())),
-      )
-
-      // Region filter
-      if (selectedRegion !== 'all') {
-        filtered = filtered.filter((article) => {
-          const continent = article.continent.toLowerCase()
-          switch (selectedRegion) {
-            case 'brasil':
-              return article.country.toLowerCase() === 'brasil'
-            case 'internacional':
-              return article.country.toLowerCase() !== 'brasil'
-            case 'america-do-sul':
-              return continent === 'américa do sul'
-            case 'america-do-norte':
-              return continent === 'américa do norte'
-            case 'africa':
-              return continent === 'africa'
-            case 'europa':
-              return continent === 'europa'
-            case 'asia':
-              return continent === 'ásia'
-            case 'oceania':
-              return continent === 'oceania'
-            default:
-              return true
-          }
-        })
-      }
-
-      setAllArticles(filtered.sort((a, b) => b.totalScore - a.totalScore))
-      setCurrentPage(1)
-      setIsLoading(false)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [searchTerm, selectedRegion, date])
-
-  const paginatedArticles = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    const endIndex = startIndex + ITEMS_PER_PAGE
-    return allArticles.slice(startIndex, endIndex)
-  }, [allArticles, currentPage])
-
-  const totalPages = Math.ceil(allArticles.length / ITEMS_PER_PAGE)
+  const {
+    articles: paginatedArticles,
+    isLoading,
+    isLoadingMore,
+    hasMore,
+    currentPage,
+    totalPages,
+    totalCount,
+    sortConfig,
+    setCurrentPage,
+    handleSort,
+  } = useIntelligentPagination({
+    startDate: date?.from?.toISOString() ?? '',
+    endDate: date?.to?.toISOString() ?? '',
+    searchTerm,
+    selectedRegion,
+    itemsPerPage: ITEMS_PER_PAGE,
+    loadMoreThreshold: 3, // Carrega mais quando restam 3 páginas
+  })
 
   const handleArticleClick = (article: Article) => {
     setSelectedArticle(article)
   }
 
+  const getSortIcon = (field: string) => {
+    if (sortConfig.field !== field) {
+      return <ArrowUpDown className="text-muted-foreground h-4 w-4" />
+    }
+    return sortConfig.direction === 'asc' ? (
+      <ArrowUp className="text-primary h-4 w-4" />
+    ) : (
+      <ArrowDown className="text-primary h-4 w-4" />
+    )
+  }
+
+  const handleHeaderClick = (field: string) => {
+    handleSort(field)
+  }
+
   const renderSkeletons = () =>
     Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
       <TableRow key={i}>
-        <TableCell>
-          <Skeleton className="h-5 w-3/4" />
+        <TableCell className="w-2/5">
+          <Skeleton className="h-5 w-full" />
         </TableCell>
-        <TableCell className="hidden md:table-cell">
-          <Skeleton className="h-5 w-24" />
+        <TableCell className="hidden w-1/5 md:table-cell">
+          <Skeleton className="h-5 w-full" />
         </TableCell>
-        <TableCell className="text-center">
+        <TableCell className="w-1/5 text-center">
           <Skeleton className="mx-auto h-6 w-10 rounded-full" />
         </TableCell>
-        <TableCell className="text-right">
-          <Skeleton className="ml-auto h-5 w-28" />
+        <TableCell className="w-1/5 text-right">
+          <Skeleton className="ml-auto h-5 w-20" />
         </TableCell>
       </TableRow>
     ))
@@ -163,10 +123,42 @@ const Index = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Título</TableHead>
-                  <TableHead className="hidden md:table-cell">Fonte</TableHead>
-                  <TableHead className="text-center">Pontuação</TableHead>
-                  <TableHead className="text-right">Data</TableHead>
+                  <TableHead
+                    className="hover:bg-muted/50 w-60/100 cursor-pointer transition-colors select-none"
+                    onClick={() => handleHeaderClick('title')}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>Título</span>
+                      {getSortIcon('title')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="hover:bg-muted/50 hidden w-20/100 cursor-pointer transition-colors select-none md:table-cell"
+                    onClick={() => handleHeaderClick('source')}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>Fonte</span>
+                      {getSortIcon('source')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="hover:bg-muted/50 w-10/100 cursor-pointer text-center transition-colors select-none"
+                    onClick={() => handleHeaderClick('averageScore')}
+                  >
+                    <div className="flex items-center justify-center space-x-1">
+                      <span>Pontuação</span>
+                      {getSortIcon('averageScore')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="hover:bg-muted/50 w-10/100 cursor-pointer text-right transition-colors select-none"
+                    onClick={() => handleHeaderClick('publishedAt')}
+                  >
+                    <div className="flex items-center justify-end space-x-1">
+                      <span>Data</span>
+                      {getSortIcon('publishedAt')}
+                    </div>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -179,18 +171,18 @@ const Index = () => {
                       onClick={() => handleArticleClick(article)}
                       className="cursor-pointer"
                     >
-                      <TableCell className="max-w-sm truncate font-medium">
+                      <TableCell className="w-60/100 truncate font-medium text-ellipsis">
                         {article.title}
                       </TableCell>
-                      <TableCell className="text-muted-foreground hidden md:table-cell">
+                      <TableCell className="text-muted-foreground hidden w-15/100 md:table-cell">
                         {article.source}
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Badge className={cn('font-bold', getScoreColor(article.totalScore))}>
-                          {article.totalScore}
+                      <TableCell className="w-10/100 text-center">
+                        <Badge className={cn('font-bold', getScoreColor(article.averageScore))}>
+                          {article.averageScore.toFixed(2)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-muted-foreground text-right">
+                      <TableCell className="text-muted-foreground w-15/100 text-right">
                         {formatDistanceToNow(new Date(article.publishedAt), {
                           addSuffix: true,
                           locale: ptBR,
@@ -228,11 +220,41 @@ const Index = () => {
         )}
       </div>
 
-      <AppPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      <div className="space-y-4">
+        <AppPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+
+        {/* Indicador de carregamento inteligente */}
+        {isLoadingMore && (
+          <div className="text-muted-foreground flex items-center justify-center space-x-2 text-sm">
+            <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+            <span>Carregando mais artigos...</span>
+          </div>
+        )}
+
+        {/* Informações sobre o carregamento inteligente */}
+        {hasMore && !isLoadingMore && (
+          <div className="text-muted-foreground text-center text-xs">
+            {totalCount > 0 && (
+              <p>
+                Mostrando {totalCount} artigos.
+                {currentPage >= totalPages - 2 && (
+                  <span className="text-primary ml-1">Carregando mais automaticamente...</span>
+                )}
+              </p>
+            )}
+          </div>
+        )}
+
+        {!hasMore && totalCount > 0 && (
+          <div className="text-muted-foreground text-center text-xs">
+            <p>Todos os {totalCount} artigos foram carregados.</p>
+          </div>
+        )}
+      </div>
 
       <ArticleDetails
         article={selectedArticle}

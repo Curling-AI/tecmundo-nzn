@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 interface KeywordCardProps {
   keyword: Keyword
-  onClick: (keywordName: string) => void
+  onClick: (keywordName: string) => void | Promise<void>
 }
 
 const getScoreColor = (score: number) => {
@@ -16,12 +16,12 @@ const getScoreColor = (score: number) => {
 
 export const KeywordCard = ({ keyword, onClick }: KeywordCardProps) => {
   return (
-    <Card onClick={() => onClick(keyword.name)} className="cursor-pointer">
+    <Card onClick={() => void onClick(keyword.name)} className="cursor-pointer">
       <CardContent className="flex items-center justify-between gap-4 p-4">
         <h3 className="flex-1 leading-tight font-semibold">{keyword.name}</h3>
         <div className="text-muted-foreground flex flex-col items-end gap-1 text-xs">
           <Badge className={cn('text-base font-bold', getScoreColor(keyword.overallScore))}>
-            {keyword.overallScore}
+            {keyword.overallScore.toFixed(2)}
           </Badge>
           <span>Score Geral</span>
         </div>

@@ -19,6 +19,7 @@ export interface Keyword {
   recencyScore: number
   relevanceScore: number
   trendScore: number
+  calculatedAt: string
 }
 
 export interface Competitor {

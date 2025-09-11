@@ -1,8 +1,8 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ExternalLink, Tag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -10,8 +10,8 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet'
-import { StarRating } from '@/components/StarRating'
-import { toast } from '@/hooks/use-toast'
+// import { StarRating } from '@/components/StarRating'
+// import { toast } from '@/hooks/use-toast'
 import { Article } from '@/types'
 
 interface ArticleDetailsProps {
@@ -22,24 +22,24 @@ interface ArticleDetailsProps {
 
 export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps) => {
   const navigate = useNavigate()
-  const [rating, setRating] = useState(0)
+  // const [rating, setRating] = useState(0)
 
   if (!article) return null
 
   const handleKeywordClick = (keyword: string) => {
     onClose()
-    void navigate(`/analise-de-keywords?q=${encodeURIComponent(keyword)}`)
+    void navigate(`/analise-de-keywords?k=${encodeURIComponent(keyword)}`)
   }
 
-  const handleSaveRating = () => {
-    // Mock saving rating
-    console.log(`Rating ${rating} saved for article ${article.id}`)
-    toast({
-      title: 'Avaliação salva!',
-      description: 'Obrigado pelo seu feedback.',
-      variant: 'default',
-    })
-  }
+  // const handleSaveRating = () => {
+  //   // Mock saving rating
+  //   console.log(`Rating ${rating} saved for article ${article.id}`)
+  //   toast({
+  //     title: 'Avaliação salva!',
+  //     description: 'Obrigado pelo seu feedback.',
+  //     variant: 'default',
+  //   })
+  // }
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -77,11 +77,11 @@ export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps
             <div className="flex items-center gap-4">
               <div>
                 <p className="text-muted-foreground text-sm">Total</p>
-                <p className="text-primary text-3xl font-bold">{article.totalScore}</p>
+                <p className="text-primary text-3xl font-bold">{article.totalScore.toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">Média</p>
-                <p className="text-3xl font-bold">{article.averageScore.toFixed(1)}</p>
+                <p className="text-3xl font-bold">{article.averageScore.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@ export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps
               ))}
             </div>
           </div>
-          <div className="border-t pt-6">
+          {/* <div className="border-t pt-6">
             <h3 className="mb-2 font-semibold">
               Avalie a qualidade desta pauta para treinamento de IA:
             </h3>
@@ -116,7 +116,7 @@ export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps
                 Salvar Avaliação
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </SheetContent>
     </Sheet>
