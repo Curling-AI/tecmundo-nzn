@@ -1,13 +1,7 @@
 import { useState, useMemo } from 'react'
 import { formatDistanceToNow, isWithinInterval, endOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -27,8 +21,7 @@ import { CompetitorArticleCard } from '@/components/CompetitorArticleCard'
 const ITEMS_PER_PAGE = 10
 
 const Traffic = () => {
-  const [selectedArticle, setSelectedArticle] =
-    useState<CompetitorArticle | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<CompetitorArticle | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const { date } = useDateFilter()
 
@@ -62,8 +55,7 @@ const Traffic = () => {
           <CardHeader>
             <CardTitle>Artigos de Maior Tráfego dos Concorrentes</CardTitle>
             <CardDescription>
-              Artigos com maior pontuação de SEO dos concorrentes para o período
-              selecionado.
+              Artigos com maior pontuação de SEO dos concorrentes para o período selecionado.
             </CardDescription>
           </CardHeader>
           {/* Desktop View */}
@@ -82,12 +74,10 @@ const Traffic = () => {
                   {paginatedArticles.map((a) => (
                     <TableRow
                       key={a.id}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className="hover:bg-muted/50 cursor-pointer"
                       onClick={() => setSelectedArticle(a)}
                     >
-                      <TableCell className="font-medium max-w-xs truncate">
-                        {a.title}
-                      </TableCell>
+                      <TableCell className="max-w-xs truncate font-medium">{a.title}</TableCell>
                       <TableCell>{a.competitorName}</TableCell>
                       <TableCell className="text-center">
                         <Badge variant="secondary">{a.seoScore}</Badge>
@@ -106,13 +96,9 @@ const Traffic = () => {
           </div>
           {/* Mobile View */}
           <div className="md:hidden">
-            <CardContent className="p-4 space-y-4">
+            <CardContent className="space-y-4 p-4">
               {paginatedArticles.map((a) => (
-                <CompetitorArticleCard
-                  key={a.id}
-                  article={a}
-                  onClick={setSelectedArticle}
-                />
+                <CompetitorArticleCard key={a.id} article={a} onClick={setSelectedArticle} />
               ))}
             </CardContent>
           </div>

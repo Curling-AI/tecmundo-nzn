@@ -1,11 +1,5 @@
 import { useState, useMemo } from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -24,9 +18,7 @@ const Ranking = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const sortedCompetitors = useMemo(() => {
-    return [...MOCK_COMPETITORS].sort(
-      (a, b) => a.avgKeywordPosition - b.avgKeywordPosition,
-    )
+    return [...MOCK_COMPETITORS].sort((a, b) => a.avgKeywordPosition - b.avgKeywordPosition)
   }, [])
 
   const paginatedCompetitors = useMemo(() => {
@@ -43,8 +35,7 @@ const Ranking = () => {
         <CardHeader>
           <CardTitle>Ranking de Concorrentes por Keywords</CardTitle>
           <CardDescription>
-            Posição média e volume de keywords ranqueadas para o período
-            selecionado.
+            Posição média e volume de keywords ranqueadas para o período selecionado.
           </CardDescription>
         </CardHeader>
         {/* Desktop View */}
@@ -56,24 +47,18 @@ const Ranking = () => {
                   <TableHead className="w-12">Rank</TableHead>
                   <TableHead>Concorrente</TableHead>
                   <TableHead className="text-center">Posição Média</TableHead>
-                  <TableHead className="text-center">
-                    Keywords Rankeadas
-                  </TableHead>
+                  <TableHead className="text-center">Keywords Rankeadas</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {paginatedCompetitors.map((c, index) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-bold text-muted-foreground">
+                    <TableCell className="text-muted-foreground font-bold">
                       {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </TableCell>
                     <TableCell className="font-medium">{c.name}</TableCell>
-                    <TableCell className="text-center">
-                      {c.avgKeywordPosition.toFixed(1)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {c.rankedKeywordsCount}
-                    </TableCell>
+                    <TableCell className="text-center">{c.avgKeywordPosition.toFixed(1)}</TableCell>
+                    <TableCell className="text-center">{c.rankedKeywordsCount}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -82,7 +67,7 @@ const Ranking = () => {
         </div>
         {/* Mobile View */}
         <div className="md:hidden">
-          <CardContent className="p-4 space-y-4">
+          <CardContent className="space-y-4 p-4">
             {paginatedCompetitors.map((c, index) => (
               <CompetitorRankingCard
                 key={c.id}

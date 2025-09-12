@@ -7,7 +7,6 @@ const contentNavItems = [
   { href: '/analise-de-keywords', label: 'Keywords', icon: Search },
 ]
 
-
 const competitorNavItems = [
   {
     href: '/analise-de-concorrentes/ranking',
@@ -73,14 +72,12 @@ export const SidebarContent = () => {
             <NavLink key={item.href} {...item} />
           ))}
 
-          
-          <h3 className="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-primary-foreground/50 tracking-wider">
+          <h3 className="text-primary-foreground/50 px-3 pt-4 pb-2 text-xs font-semibold tracking-wider uppercase">
             Concorrentes
           </h3>
           {competitorNavItems.map((item) => (
             <NavLink key={item.href} {...item} />
           ))}
-          
         </nav>
       </div>
     </div>
