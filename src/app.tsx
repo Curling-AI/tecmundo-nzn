@@ -11,6 +11,7 @@ import CompetitorAnalysisLayout from './pages/competitor-analysis/Layout'
 import Comparative from './pages/competitor-analysis/Comparative'
 import Ranking from './pages/competitor-analysis/Ranking'
 import Traffic from './pages/competitor-analysis/Traffic'
+import About from './pages/About'
 
 const loading = (
   <div className="flex min-h-screen items-center justify-center">
@@ -27,6 +28,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
               <Route path="/analise-de-keywords" element={<KeywordAnalysis />} />
+              <Route path="/sobre" element={<About />} />
               <Route path="/analise-de-concorrentes" element={<CompetitorAnalysisLayout />}>
                 <Route path="comparativo" element={<Comparative />} />
                 <Route path="ranking" element={<Ranking />} />

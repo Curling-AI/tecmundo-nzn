@@ -18,6 +18,8 @@ const getPageTitle = (pathname: string): string => {
       return 'Artigos'
     case '/analise-de-keywords':
       return 'Keywords'
+    case '/sobre':
+      return 'Sobre'
     default:
       return 'TecMundo Feed Score'
   }
