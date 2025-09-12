@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Star, Trophy, TrendingUp, LineChart, Info } from 'lucide-react'
+import { Search, Star, Trophy, TrendingUp, LineChart, Info, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const contentNavItems = [
@@ -24,12 +24,18 @@ const competitorNavItems = [
     icon: LineChart,
   },
 ]
-
-const aboutNavItem = {
-  href: '/sobre',
-  label: 'Sobre',
-  icon: Info,
-}
+const aboutNavItems = [
+  {
+    href: '/sobre',
+    label: 'Sobre',
+    icon: Info,
+  },
+  {
+    href: '/fontes',
+    label: 'Fontes',
+    icon: Globe,
+  },
+]
 
 const NavLink = ({
   href,
@@ -88,7 +94,9 @@ export const SidebarContent = () => {
           <h3 className="text-primary-foreground/50 px-3 pt-4 pb-2 text-xs font-semibold tracking-wider uppercase">
             Sobre
           </h3>
-          <NavLink key={aboutNavItem.href} {...aboutNavItem} />
+          {aboutNavItems.map((item) => (
+            <NavLink key={item.href} {...item} />
+          ))}
         </nav>
       </div>
     </div>

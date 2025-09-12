@@ -49,7 +49,7 @@ export const getArticles = async (
       const match = regex.exec(article.url)
       if (!match) return article.url
       const domain = match[1]
-      const domainWithoutTld = domain.replace(/\.[^.]+$/, '')
+      const domainWithoutTld = domain.replace(/\.com\.br$/, '').replace(/\.[^.]+$/, '')
       return domainWithoutTld
     })(),
     publishedAt: article.published_at,
@@ -83,7 +83,7 @@ export const getArticlesByKeyword = async (
         const match = regex.exec(article.url)
         if (!match) return article.url
         const domain = match[1]
-        const domainWithoutTld = domain.replace(/\.[^.]+$/, '')
+        const domainWithoutTld = domain.replace(/\.com\.br$/, '').replace(/\.[^.]+$/, '')
         return domainWithoutTld
       })(),
       publishedAt: article.published_at,

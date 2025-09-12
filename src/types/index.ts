@@ -51,3 +51,12 @@ export interface KeywordComparison {
   tecmundoScore: number
   competitorScore: number
 }
+
+export interface Source {
+  id: string
+  url: string
+  name: string
+  country: string
+  continent: string
+  lastRead: string
+}
