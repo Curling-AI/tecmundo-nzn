@@ -6,6 +6,11 @@ import { Toaster } from './components/ui/sonner'
 import Layout from './components/layout/Layout'
 import Index from './pages/index'
 import KeywordAnalysis from './pages/KeywordAnalysis'
+import NotFound from './pages/NotFound'
+import CompetitorAnalysisLayout from './pages/competitor-analysis/Layout'
+import Comparative from './pages/competitor-analysis/Comparative'
+import Ranking from './pages/competitor-analysis/Ranking'
+import Traffic from './pages/competitor-analysis/Traffic'
 
 const loading = (
   <div className="flex min-h-screen items-center justify-center">
@@ -22,7 +27,13 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
               <Route path="/analise-de-keywords" element={<KeywordAnalysis />} />
+              <Route path="/analise-de-concorrentes" element={<CompetitorAnalysisLayout />}>
+                <Route path="comparativo" element={<Comparative />} />
+                <Route path="ranking" element={<Ranking />} />
+                <Route path="trafego" element={<Traffic />} />
+              </Route>
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
         <Toaster />

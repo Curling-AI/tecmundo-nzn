@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Star } from 'lucide-react'
+import { Search, Star, Trophy, TrendingUp, LineChart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const contentNavItems = [
@@ -7,7 +7,7 @@ const contentNavItems = [
   { href: '/analise-de-keywords', label: 'Keywords', icon: Search },
 ]
 
-/*
+
 const competitorNavItems = [
   {
     href: '/analise-de-concorrentes/ranking',
@@ -25,7 +25,7 @@ const competitorNavItems = [
     icon: LineChart,
   },
 ]
-*/
+
 const NavLink = ({
   href,
   label,
@@ -73,14 +73,14 @@ export const SidebarContent = () => {
             <NavLink key={item.href} {...item} />
           ))}
 
-          {/*
+          
           <h3 className="px-3 pt-4 pb-2 text-xs font-semibold uppercase text-primary-foreground/50 tracking-wider">
             Concorrentes
           </h3>
           {competitorNavItems.map((item) => (
             <NavLink key={item.href} {...item} />
           ))}
-          */}
+          
         </nav>
       </div>
     </div>
