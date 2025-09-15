@@ -60,3 +60,9 @@ export interface Source {
   continent: string
   lastRead: string
 }
+
+export interface ArticleRating {
+  id: string
+  articleId: string
+  rating: number
+}

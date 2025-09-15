@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Article } from '@/types'
+import { Article, ArticleRating } from '@/types'
 
 interface dbArticle {
   id: string
@@ -90,4 +90,26 @@ export const getArticlesByKeyword = async (
       keywords: article.keywords,
     }),
   )
+}
+
+export const saveArticleRating = async (
+  articleId: string,
+  rating: number,
+): Promise<ArticleRating> => {
+  const { data, error } = (await supabase
+    .from('article_ratings')
+    .insert({ article_id: articleId, rating: rating })
+    .select()
+    .single()) as unknown as { data: ArticleRating; error: Error | null }
+
+  if (error) {
+    console.error('Error saving article rating:', error)
+    throw error
+  }
+
+  return {
+    id: data.id,
+    articleId,
+    rating: rating,
+  }
 }

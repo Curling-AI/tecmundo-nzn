@@ -2,7 +2,9 @@ import { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from 'next-themes'
 import { Loader2 } from 'lucide-react'
-import { Toaster } from './components/ui/sonner'
+import { Toaster as SonnerToaster } from './components/ui/sonner'
+import { Toaster } from './components/ui/toaster'
+import { ToastProvider } from './components/ui/toast'
 import Layout from './components/layout/Layout'
 import Index from './pages/index'
 import KeywordAnalysis from './pages/KeywordAnalysis'
@@ -24,23 +26,26 @@ function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <Router>
-        <Suspense fallback={loading}>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/analise-de-keywords" element={<KeywordAnalysis />} />
-              <Route path="/fontes" element={<Sources />} />
-              <Route path="/sobre" element={<About />} />
-              <Route path="/analise-de-concorrentes" element={<CompetitorAnalysisLayout />}>
-                <Route path="comparativo" element={<Comparative />} />
-                <Route path="ranking" element={<Ranking />} />
-                <Route path="trafego" element={<Traffic />} />
+        <ToastProvider>
+          <Suspense fallback={loading}>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/analise-de-keywords" element={<KeywordAnalysis />} />
+                <Route path="/fontes" element={<Sources />} />
+                <Route path="/sobre" element={<About />} />
+                <Route path="/analise-de-concorrentes" element={<CompetitorAnalysisLayout />}>
+                  <Route path="comparativo" element={<Comparative />} />
+                  <Route path="ranking" element={<Ranking />} />
+                  <Route path="trafego" element={<Traffic />} />
+                </Route>
               </Route>
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <Toaster />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+          <Toaster />
+          <SonnerToaster duration={5000} richColors />
+        </ToastProvider>
       </Router>
     </ThemeProvider>
   )
