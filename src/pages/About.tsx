@@ -138,14 +138,14 @@ export default function About() {
               <CardHeader>
                 <CardTitle className="text-primary text-xl">Avaliação de Impacto</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 displ">
+              <CardContent className="displ space-y-4">
                 <p className="text-muted-foreground">
-                  A avaliação de impacto é um fator multiplicador aplicado à pontuação geral da keyword
-                  baseado no impacto dos artigos publicados baseados nela.
+                  A avaliação de impacto é um fator multiplicador aplicado à pontuação geral da
+                  keyword baseado no impacto dos artigos publicados baseados nela.
                 </p>
                 <p className="text-sm">
-                  Dependendo do valor médio da avaliação para artigos com aquela keyword, a pontuação
-                  geral é multiplicada por um fator específico:
+                  Dependendo do valor médio da avaliação para artigos com aquela keyword, a
+                  pontuação geral é multiplicada por um fator específico:
                 </p>
                 <div className="bg-muted rounded-lg p-4">
                   <div className="grid grid-cols-1 gap-2 text-sm">

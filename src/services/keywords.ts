@@ -22,19 +22,18 @@ export const getKeywords = async (
   offset = 0,
   limit = 1000,
 ): Promise<Keyword[]> => {
-  const { data, error } = await supabase
-    .rpc('get_weighted_keywords', {
-      p_start_date: start_date,
-      p_end_date: end_date,
-      p_order_by: order_by,
-      p_order_direction: order_direction,
-      p_offset: offset,
-      p_limit: limit,
-    })
+  const { data, error } = (await supabase.rpc('get_weighted_keywords', {
+    p_start_date: start_date,
+    p_end_date: end_date,
+    p_order_by: order_by,
+    p_order_direction: order_direction,
+    p_offset: offset,
+    p_limit: limit,
+  })) as unknown as { data: dbKeyword[]; error: Error | null }
 
   if (error || !data) {
     console.error('Error fetching keywords:', error)
-    throw error
+    throw error!
   }
 
   return (data as unknown as dbKeyword[]).map((keyword) => ({

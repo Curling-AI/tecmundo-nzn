@@ -26,7 +26,6 @@ export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps
     void navigate(`/analise-de-keywords?k=${encodeURIComponent(keyword)}`)
   }
 
-
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="w-full sm:max-w-lg">

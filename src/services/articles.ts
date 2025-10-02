@@ -100,10 +100,7 @@ export const getArticlesByKeywords = async (
 ): Promise<Article[]> => {
   if (keywords.length === 0) return []
 
-  let query = supabase
-    .from('vw_feed_item_scores')
-    .select('*')
-    .overlaps('keywords', keywords)
+  let query = supabase.from('vw_feed_item_scores').select('*').overlaps('keywords', keywords)
 
   // Só adicionar a condição de exclusão se um ID for fornecido
   if (excludeArticleId) {
@@ -138,29 +135,38 @@ export const getArticlesByKeywords = async (
   })) as Article[]
 }
 
-export const recalculateArticleScores = async (articleId: string, start_date?: string, end_date?: string): Promise<Article[]> => {
+export const recalculateArticleScores = async (
+  articleId: string,
+  start_date?: string,
+  end_date?: string,
+): Promise<Article[]> => {
   // Buscar o artigo completo para obter suas keywords e dados
-  const { data: articleData, error: articleError } = await supabase
+  const { data: articleData, error: articleError } = (await supabase
     .from('vw_feed_item_scores')
     .select('*')
     .eq('id', articleId)
-    .single()
+    .single()) as unknown as { data: dbArticle; error: Error | null }
 
   if (articleError || !articleData) {
     console.error('Error fetching article for recalculation:', articleError)
-    throw articleError
+    throw articleError!
   }
 
-  const articleKeywords = articleData.keywords as string[]
-  
+  const articleKeywords = articleData.keywords
+
   if (!articleKeywords || articleKeywords.length === 0) {
     console.log('No keywords found for article, skipping recalculation')
     return []
   }
 
   // Buscar todos os artigos que compartilham pelo menos uma keyword (incluindo o próprio artigo)
-  const relatedArticles = await getArticlesByKeywords(articleKeywords, articleId, start_date, end_date)
-  
+  const relatedArticles = await getArticlesByKeywords(
+    articleKeywords,
+    articleId,
+    start_date,
+    end_date,
+  )
+
   // Adicionar o próprio artigo à lista de artigos para atualização
   const currentArticle: Article = {
     id: articleData.id,
@@ -201,15 +207,15 @@ export const recalculateArticleScores = async (articleId: string, start_date?: s
       }
     } else {
       // Para artigos relacionados, aplicar um boost menor baseado no overlap de keywords
-      const sharedKeywords = article.keywords.filter((keyword: string) => 
-        articleKeywords.includes(keyword)
+      const sharedKeywords = article.keywords.filter((keyword: string) =>
+        articleKeywords.includes(keyword),
       )
       const keywordOverlapRatio = sharedKeywords.length / article.keywords.length
       const relatedBoost = Math.min(keywordOverlapRatio * 0.05, 0.1) // Máximo de 10% de boost
-      
+
       const newTotalScore = article.totalScore * (1 + relatedBoost)
       const newAverageScore = article.averageScore * (1 + relatedBoost)
-      
+
       return {
         ...article,
         totalScore: newTotalScore,
@@ -217,7 +223,7 @@ export const recalculateArticleScores = async (articleId: string, start_date?: s
       }
     }
   })
-    
+
   return updatedArticles
 }
 
@@ -240,24 +246,27 @@ export const getRelatedArticles = async (
   }
 
   const articleKeywords = articleData.keywords as string[]
-  
+
   if (!articleKeywords || articleKeywords.length === 0) {
     return []
   }
 
   // Buscar artigos relacionados limitando a quantidade
-  const relatedArticles = await getArticlesByKeywords(articleKeywords, articleId, start_date, end_date)
-  
+  const relatedArticles = await getArticlesByKeywords(
+    articleKeywords,
+    articleId,
+    start_date,
+    end_date,
+  )
+
   // Ordenar por relevância (quantidade de keywords compartilhadas)
   const sortedArticles = relatedArticles
-    .map(article => {
-      const sharedKeywords = article.keywords.filter(keyword => 
-        articleKeywords.includes(keyword)
-      )
+    .map((article) => {
+      const sharedKeywords = article.keywords.filter((keyword) => articleKeywords.includes(keyword))
       return {
         ...article,
         sharedKeywordsCount: sharedKeywords.length,
-        sharedKeywords: sharedKeywords
+        sharedKeywords: sharedKeywords,
       }
     })
     .sort((a, b) => b.sharedKeywordsCount - a.sharedKeywordsCount)

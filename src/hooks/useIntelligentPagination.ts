@@ -353,10 +353,10 @@ export function useIntelligentPagination({
   const updateArticles = useCallback((updatedArticles: Article[]) => {
     setState((prev) => {
       const updatedAllArticles = [...prev.allArticles]
-      
+
       // Atualizar cada artigo que foi recalculado
       updatedArticles.forEach((updatedArticle) => {
-        const index = updatedAllArticles.findIndex(article => article.id === updatedArticle.id)
+        const index = updatedAllArticles.findIndex((article) => article.id === updatedArticle.id)
         if (index !== -1) {
           // Atualizar o artigo existente com os novos dados
           updatedAllArticles[index] = {

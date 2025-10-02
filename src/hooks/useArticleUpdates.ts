@@ -16,21 +16,20 @@ export function useArticleUpdates({ updateArticles }: UseArticleUpdatesProps) {
    */
   const updateRelatedArticles = useCallback(
     async (articleId: string, start_date?: string, end_date?: string) => {
-      try {        
+      try {
         // Buscar artigos relacionados que precisam ser atualizados
         const relatedArticles = await recalculateArticleScores(articleId, start_date, end_date)
-        
-        if (relatedArticles.length > 0) {          
+
+        if (relatedArticles.length > 0) {
           // Atualizar os artigos no estado
-          updateArticles(relatedArticles)  
-        } else {
+          updateArticles(relatedArticles)
         }
       } catch (error) {
         console.error('❌ Erro ao atualizar artigos relacionados:', error)
         throw error
       }
     },
-    [updateArticles]
+    [updateArticles],
   )
 
   return {

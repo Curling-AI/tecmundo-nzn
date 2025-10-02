@@ -65,11 +65,11 @@ const Index = () => {
   }
 
   const handleRatingChange = async (articleId: string, rating: number) => {
-    setArticleRatings(prev => ({
+    setArticleRatings((prev) => ({
       ...prev,
-      [articleId]: rating
+      [articleId]: rating,
     }))
-    
+
     // Salvar automaticamente o rating
     await handleSaveRating(articleId, rating)
   }
@@ -77,10 +77,10 @@ const Index = () => {
   const handleSaveRating = async (articleId: string, rating: number) => {
     try {
       await saveArticleRating(articleId, rating)
-      
+
       // Notificar que os artigos relacionados devem ser atualizados
-      updateRelatedArticles(articleId, date?.from?.toISOString(), date?.to?.toISOString())
-      
+      await updateRelatedArticles(articleId, date?.from?.toISOString(), date?.to?.toISOString())
+
       toast({
         title: 'Avaliação salva!',
         description: 'Obrigado pelo seu feedback.',
@@ -235,7 +235,7 @@ const Index = () => {
                           locale: ptBR,
                         })}
                       </TableCell>
-                      <TableCell 
+                      <TableCell
                         className="w-20/100 text-center"
                         onClick={(e) => e.stopPropagation()}
                       >
