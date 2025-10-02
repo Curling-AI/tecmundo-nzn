@@ -20,6 +20,7 @@ export interface Keyword {
   relevanceScore: number
   trendScore: number
   calculatedAt: string
+  averageArticleRating: number
 }
 
 export interface Competitor {

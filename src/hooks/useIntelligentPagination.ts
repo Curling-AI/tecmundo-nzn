@@ -52,7 +52,7 @@ export function useIntelligentPagination({
   const [hasReachedEnd, setHasReachedEnd] = useState(false)
   const lastFetchParams = useRef<string>('')
 
-  const SUPABASE_LIMIT = 1000
+  const SUPABASE_LIMIT = 500
 
   // Função para buscar artigos com paginação
   const fetchArticles = useCallback(
@@ -184,8 +184,8 @@ export function useIntelligentPagination({
 
         // Tratamento especial para campos de data
         if (field === 'publishedAt') {
-          aValue = new Date(aValue).getTime()
-          bValue = new Date(bValue).getTime()
+          aValue = new Date(aValue as string).getTime()
+          bValue = new Date(bValue as string).getTime()
         }
 
         // Tratamento especial para strings
@@ -349,6 +349,35 @@ export function useIntelligentPagination({
     })
   }, [])
 
+  // Função para atualizar artigos específicos (usado quando artigos relacionados são recalculados)
+  const updateArticles = useCallback((updatedArticles: Article[]) => {
+    setState((prev) => {
+      const updatedAllArticles = [...prev.allArticles]
+
+      // Atualizar cada artigo que foi recalculado
+      updatedArticles.forEach((updatedArticle) => {
+        const index = updatedAllArticles.findIndex((article) => article.id === updatedArticle.id)
+        if (index !== -1) {
+          // Atualizar o artigo existente com os novos dados
+          updatedAllArticles[index] = {
+            ...updatedAllArticles[index],
+            totalScore: updatedArticle.totalScore,
+            averageScore: updatedArticle.averageScore,
+            // Manter outros campos inalterados
+          }
+        } else {
+          // Se o artigo não estiver na lista atual, adicionar (caso raro)
+          updatedAllArticles.push(updatedArticle)
+        }
+      })
+
+      return {
+        ...prev,
+        allArticles: updatedAllArticles,
+      }
+    })
+  }, [])
+
   return {
     articles: paginatedArticles,
     allArticles: state.articles,
@@ -363,5 +392,6 @@ export function useIntelligentPagination({
     resetPagination,
     loadMoreArticles,
     handleSort,
+    updateArticles, // Nova função para atualizar artigos
   }
 }

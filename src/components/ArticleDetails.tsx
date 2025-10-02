@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ExternalLink, Tag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -10,10 +8,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet'
-import { StarRating } from '@/components/StarRating'
-import { toast } from '@/hooks/use-toast'
 import { Article } from '@/types'
-import { saveArticleRating } from '@/services/articles'
 
 interface ArticleDetailsProps {
   article: Article | null
@@ -23,32 +18,12 @@ interface ArticleDetailsProps {
 
 export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps) => {
   const navigate = useNavigate()
-  const [rating, setRating] = useState(0)
 
   if (!article) return null
 
   const handleKeywordClick = (keyword: string) => {
     onClose()
     void navigate(`/analise-de-keywords?k=${encodeURIComponent(keyword)}`)
-  }
-
-  const handleSaveRating = async () => {
-    // Mock saving rating
-    try {
-      await saveArticleRating(article.id, rating)
-      toast({
-        title: 'Avaliação salva!',
-        description: 'Obrigado pelo seu feedback.',
-        variant: 'default',
-      })
-    } catch (error) {
-      console.error('Error saving article rating:', error)
-      toast({
-        title: 'Erro ao salvar avaliação',
-        description: 'Ocorreu um erro ao salvar a avaliação. Por favor, tente novamente.',
-        variant: 'destructive',
-      })
-    }
   }
 
   return (
@@ -110,21 +85,6 @@ export const ArticleDetails = ({ article, isOpen, onClose }: ArticleDetailsProps
                   {keyword}
                 </Badge>
               ))}
-            </div>
-          </div>
-          <div className="border-t pt-6">
-            <h3 className="mb-2 font-semibold">
-              Avalie a qualidade desta pauta para treinamento de IA:
-            </h3>
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <StarRating onRatingChange={setRating} />
-              <Button
-                onClick={() => void handleSaveRating()}
-                disabled={rating === 0}
-                className="w-full sm:w-auto"
-              >
-                Salvar Avaliação
-              </Button>
             </div>
           </div>
         </div>

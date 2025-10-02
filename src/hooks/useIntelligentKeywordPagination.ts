@@ -73,6 +73,7 @@ export function useIntelligentKeywordPagination({
           trendScore: 'trending_score',
           calculatedAt: 'calculated_at',
           name: 'keyword_text',
+          averageArticleRating: 'average_article_rating',
         }
 
         const supabaseField = fieldMapping[state.sortConfig.field] || 'overall_score'
