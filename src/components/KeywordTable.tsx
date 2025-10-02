@@ -12,6 +12,7 @@ import { Keyword } from '@/types'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Star } from 'lucide-react'
 
 interface KeywordTableProps {
   keywords: Keyword[]
@@ -25,6 +26,55 @@ const getScoreColor = (score: number) => {
   if (score > 90) return 'bg-secondary text-secondary-foreground'
   if (score > 80) return 'bg-primary text-primary-foreground'
   return 'bg-muted text-muted-foreground'
+}
+
+const renderStarRating = (rating: number) => {
+  const stars = []
+  const fullStars = Math.floor(rating)
+  const hasHalfStar = rating % 1 >= 0.5
+  
+  // Estrelas preenchidas
+  for (let i = 0; i < fullStars; i++) {
+    stars.push(
+      <Star
+        key={i}
+        className="h-4 w-4 text-yellow-400 fill-yellow-400"
+      />
+    )
+  }
+  
+  // Meia estrela se necessário
+  if (hasHalfStar) {
+    stars.push(
+      <Star
+        key="half"
+        className="h-4 w-4 text-yellow-400 fill-yellow-400"
+        style={{
+          clipPath: 'polygon(50% 0%, 50% 100%, 0% 100%, 0% 0%)'
+        }}
+      />
+    )
+  }
+  
+  // Estrelas vazias para completar 5
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
+  for (let i = 0; i < emptyStars; i++) {
+    stars.push(
+      <Star
+        key={`empty-${i}`}
+        className="h-4 w-4 text-gray-300"
+      />
+    )
+  }
+  
+  return (
+    <div className="flex items-center gap-0.5">
+      {stars}
+      <span className="ml-1 text-xs text-muted-foreground">
+        {rating.toFixed(1)}
+      </span>
+    </div>
+  )
 }
 
 export const KeywordTable = ({
@@ -45,6 +95,15 @@ export const KeywordTable = ({
             <div className="flex items-center space-x-1">
               <span>Keyword</span>
               {getSortIcon('name')}
+            </div>
+          </TableHead>
+          <TableHead
+            className="hover:bg-muted/50 w-10/100 cursor-pointer text-center transition-colors select-none"
+            onClick={() => onSort('averageArticleRating')}
+          >
+            <div className="flex items-center justify-center space-x-1">
+              <span>Impacto</span>
+              {getSortIcon('averageArticleRating')}
             </div>
           </TableHead>
           <TableHead
@@ -111,6 +170,16 @@ export const KeywordTable = ({
                   <Skeleton className="h-5 w-32" />
                 </TableCell>
                 <TableCell className="text-center">
+                  <div className="flex items-center justify-center gap-0.5">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="ml-1 h-3 w-6" />
+                  </div>
+                </TableCell>
+                <TableCell className="text-center">
                   <Skeleton className="mx-auto h-6 w-10 rounded-full" />
                 </TableCell>
                 <TableCell className="hidden text-center md:table-cell">
@@ -130,6 +199,21 @@ export const KeywordTable = ({
                 </TableCell>
               </TableRow>
             ))
+          : keywords.length === 0
+          ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-8">
+                  <div className="flex flex-col items-center space-y-2">
+                    <p className="text-muted-foreground text-sm">
+                      Nenhuma keyword encontrada
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Tente ajustar os filtros ou checar os créditos na api de keywords
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )
           : keywords.map((keyword) => (
               <TableRow
                 key={keyword.id}
@@ -137,6 +221,9 @@ export const KeywordTable = ({
                 className="hover:bg-muted/50 cursor-pointer"
               >
                 <TableCell className="font-medium">{keyword.name}</TableCell>
+                <TableCell className="text-center">
+                  {renderStarRating(keyword.averageArticleRating)}
+                </TableCell>
                 <TableCell className="text-center">
                   <Badge className={cn('font-bold', getScoreColor(keyword.overallScore))}>
                     {keyword.overallScore.toFixed(2)}

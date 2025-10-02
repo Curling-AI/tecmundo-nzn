@@ -4,14 +4,14 @@ import { Keyword } from '@/types'
 interface dbKeyword {
   id: string
   keyword_text: string
-  keyword_scores: {
-    overall_score: number
-    quantity_score: number
-    recency_score: number
-    relevance_score: number
-    trending_score: number
-    calculated_at: string
-  }
+  overall_score: number
+  weighted_score: number
+  quantity_score: number
+  recency_score: number
+  relevance_score: number
+  trending_score: number
+  average_article_rating: number
+  calculated_at: string
 }
 
 export const getKeywords = async (
@@ -23,18 +23,14 @@ export const getKeywords = async (
   limit = 1000,
 ): Promise<Keyword[]> => {
   const { data, error } = await supabase
-    .from('keywords')
-    .select(
-      'id, keyword_text, keyword_scores (overall_score, quantity_score, recency_score, relevance_score, trending_score, calculated_at)',
-    )
-    .order(order_by, {
-      ascending: order_direction === 'asc',
-      nullsFirst: false,
-      referencedTable: 'keyword_scores',
+    .rpc('get_weighted_keywords', {
+      p_start_date: start_date,
+      p_end_date: end_date,
+      p_order_by: order_by,
+      p_order_direction: order_direction,
+      p_offset: offset,
+      p_limit: limit,
     })
-    .gte('keyword_scores.calculated_at', start_date)
-    .lte('keyword_scores.calculated_at', end_date)
-    .range(offset, offset + limit - 1)
 
   if (error || !data) {
     console.error('Error fetching keywords:', error)
@@ -44,11 +40,12 @@ export const getKeywords = async (
   return (data as unknown as dbKeyword[]).map((keyword) => ({
     ...keyword,
     name: keyword.keyword_text,
-    overallScore: keyword.keyword_scores?.overall_score || 0,
-    quantityScore: keyword.keyword_scores?.quantity_score || 0,
-    recencyScore: keyword.keyword_scores?.recency_score || 0,
-    relevanceScore: keyword.keyword_scores?.relevance_score || 0,
-    trendScore: keyword.keyword_scores?.trending_score || 0,
-    calculatedAt: keyword.keyword_scores?.calculated_at || '',
+    overallScore: keyword.weighted_score || 0,
+    quantityScore: keyword.quantity_score || 0,
+    recencyScore: keyword.recency_score || 0,
+    relevanceScore: keyword.relevance_score || 0,
+    trendScore: keyword.trending_score || 0,
+    calculatedAt: keyword.calculated_at || '',
+    averageArticleRating: keyword.average_article_rating || 0,
   }))
 }

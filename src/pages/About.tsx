@@ -133,6 +133,50 @@ export default function About() {
                 </p>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-primary text-xl">Avaliação de Impacto</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 displ">
+                <p className="text-muted-foreground">
+                  A avaliação de impacto é um fator multiplicador aplicado à pontuação geral da keyword
+                  baseado no impacto dos artigos publicados baseados nela.
+                </p>
+                <p className="text-sm">
+                  Dependendo do valor médio da avaliação para artigos com aquela keyword, a pontuação
+                  geral é multiplicada por um fator específico:
+                </p>
+                <div className="bg-muted rounded-lg p-4">
+                  <div className="grid grid-cols-1 gap-2 text-sm">
+                    <div>
+                      <span className="font-mono">5:</span>
+                      <span className="font-semibold">x1.5</span>
+                    </div>
+                    <div>
+                      <span className="font-mono">4:</span>
+                      <span className="font-semibold">x1.25</span>
+                    </div>
+                    <div>
+                      <span className="font-mono">3:</span>
+                      <span className="font-semibold">x1.0</span>
+                    </div>
+                    <div>
+                      <span className="font-mono">2:</span>
+                      <span className="font-semibold">x0.75</span>
+                    </div>
+                    <div>
+                      <span className="font-mono">1:</span>
+                      <span className="font-semibold">x0.5</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-sm">
+                  Keywords com artigos de maior qualidade recebem um boost na pontuação, enquanto
+                  aquelas com conteúdo de menor qualidade têm sua pontuação reduzida.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 

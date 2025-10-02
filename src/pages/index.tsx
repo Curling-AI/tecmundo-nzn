@@ -16,12 +16,16 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ArticleDetails } from '@/components/ArticleDetails'
 import { AppPagination } from '@/components/AppPagination'
+import { StarRating } from '@/components/StarRating'
 import { Article } from '@/types'
 import { cn } from '@/lib/utils'
 import { RegionFilter } from '@/components/RegionFilter'
 import { ArticleCard, getScoreColor } from '@/components/ArticleCard'
 import { useDateFilter } from '@/store/dateFilter'
 import { useIntelligentPagination } from '@/hooks/useIntelligentPagination'
+import { useArticleUpdates } from '@/hooks/useArticleUpdates'
+import { saveArticleRating } from '@/services/articles'
+import { toast } from '@/hooks/use-toast'
 
 const ITEMS_PER_PAGE = 10
 
@@ -29,6 +33,7 @@ const Index = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('all')
+  const [articleRatings, setArticleRatings] = useState<Record<string, number>>({})
   const { date } = useDateFilter()
 
   const {
@@ -42,6 +47,7 @@ const Index = () => {
     sortConfig,
     setCurrentPage,
     handleSort,
+    updateArticles,
   } = useIntelligentPagination({
     startDate: date?.from?.toISOString() ?? '',
     endDate: date?.to?.toISOString() ?? '',
@@ -51,8 +57,43 @@ const Index = () => {
     loadMoreThreshold: 3, // Carrega mais quando restam 3 páginas
   })
 
+  // Hook para gerenciar atualizações de artigos relacionados
+  const { updateRelatedArticles } = useArticleUpdates({ updateArticles })
+
   const handleArticleClick = (article: Article) => {
     setSelectedArticle(article)
+  }
+
+  const handleRatingChange = async (articleId: string, rating: number) => {
+    setArticleRatings(prev => ({
+      ...prev,
+      [articleId]: rating
+    }))
+    
+    // Salvar automaticamente o rating
+    await handleSaveRating(articleId, rating)
+  }
+
+  const handleSaveRating = async (articleId: string, rating: number) => {
+    try {
+      await saveArticleRating(articleId, rating)
+      
+      // Notificar que os artigos relacionados devem ser atualizados
+      updateRelatedArticles(articleId, date?.from?.toISOString(), date?.to?.toISOString())
+      
+      toast({
+        title: 'Avaliação salva!',
+        description: 'Obrigado pelo seu feedback.',
+        variant: 'default',
+      })
+    } catch (error) {
+      console.error('Error saving article rating:', error)
+      toast({
+        title: 'Erro ao salvar avaliação',
+        description: 'Ocorreu um erro ao salvar a avaliação. Por favor, tente novamente.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const getSortIcon = (field: string) => {
@@ -73,17 +114,20 @@ const Index = () => {
   const renderSkeletons = () =>
     Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
       <TableRow key={i}>
-        <TableCell className="w-2/5">
+        <TableCell className="w-2/6">
           <Skeleton className="h-5 w-full" />
         </TableCell>
-        <TableCell className="hidden w-1/5 md:table-cell">
+        <TableCell className="hidden w-1/6 md:table-cell">
           <Skeleton className="h-5 w-full" />
         </TableCell>
-        <TableCell className="w-1/5 text-center">
+        <TableCell className="w-1/6 text-center">
           <Skeleton className="mx-auto h-6 w-10 rounded-full" />
         </TableCell>
-        <TableCell className="w-1/5 text-right">
+        <TableCell className="w-1/6 text-right">
           <Skeleton className="ml-auto h-5 w-20" />
+        </TableCell>
+        <TableCell className="w-1/6 text-center">
+          <Skeleton className="mx-auto h-6 w-20" />
         </TableCell>
       </TableRow>
     ))
@@ -133,7 +177,7 @@ const Index = () => {
                     </div>
                   </TableHead>
                   <TableHead
-                    className="hover:bg-muted/50 hidden w-20/100 cursor-pointer transition-colors select-none md:table-cell"
+                    className="hover:bg-muted/50 hidden w-15/100 cursor-pointer transition-colors select-none md:table-cell"
                     onClick={() => handleHeaderClick('source')}
                   >
                     <div className="flex items-center space-x-1">
@@ -151,13 +195,16 @@ const Index = () => {
                     </div>
                   </TableHead>
                   <TableHead
-                    className="hover:bg-muted/50 w-10/100 cursor-pointer text-right transition-colors select-none"
+                    className="hover:bg-muted/50 w-15/100 cursor-pointer text-right transition-colors select-none"
                     onClick={() => handleHeaderClick('publishedAt')}
                   >
                     <div className="flex items-center justify-end space-x-1">
                       <span>Data</span>
                       {getSortIcon('publishedAt')}
                     </div>
+                  </TableHead>
+                  <TableHead className="w-20/100 text-center">
+                    <span>Avaliação de Impacto</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -188,11 +235,22 @@ const Index = () => {
                           locale: ptBR,
                         })}
                       </TableCell>
+                      <TableCell 
+                        className="w-20/100 text-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="flex justify-center">
+                          <StarRating
+                            initialRating={articleRatings[article.id] || 0}
+                            onRatingChange={(rating) => void handleRatingChange(article.id, rating)}
+                          />
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-muted-foreground py-8 text-center">
+                    <TableCell colSpan={5} className="text-muted-foreground py-8 text-center">
                       Nenhum artigo encontrado.
                     </TableCell>
                   </TableRow>
