@@ -253,6 +253,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 99,
     relevanceScore: 97,
     trendScore: 99,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 9.2,
   },
   {
     id: 'k2',
@@ -262,6 +264,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 98,
     relevanceScore: 96,
     trendScore: 98,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 9.1,
   },
   {
     id: 'k3',
@@ -271,6 +275,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 96,
     relevanceScore: 95,
     trendScore: 95,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.9,
   },
   {
     id: 'k4',
@@ -280,6 +286,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 90,
     relevanceScore: 93,
     trendScore: 89,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.7,
   },
   {
     id: 'k5',
@@ -289,6 +297,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 89,
     relevanceScore: 88,
     trendScore: 87,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.5,
   },
   {
     id: 'k6',
@@ -298,6 +308,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 84,
     relevanceScore: 85,
     trendScore: 83,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.3,
   },
   {
     id: 'k7',
@@ -307,6 +319,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 82,
     relevanceScore: 81,
     trendScore: 79,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.0,
   },
   {
     id: 'k8',
@@ -316,6 +330,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 93,
     relevanceScore: 91,
     trendScore: 94,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.8,
   },
   {
     id: 'k9',
@@ -325,6 +341,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 90,
     relevanceScore: 89,
     trendScore: 88,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.6,
   },
   {
     id: 'k10',
@@ -334,6 +352,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 87,
     relevanceScore: 86,
     trendScore: 85,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.4,
   },
   {
     id: 'k11',
@@ -343,6 +363,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 82,
     relevanceScore: 83,
     trendScore: 81,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.2,
   },
   {
     id: 'k12',
@@ -352,6 +374,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 97,
     relevanceScore: 95,
     trendScore: 97,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 9.0,
   },
   {
     id: 'k13',
@@ -361,6 +385,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 88,
     relevanceScore: 87,
     trendScore: 86,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.5,
   },
   {
     id: 'k14',
@@ -370,6 +396,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 85,
     relevanceScore: 84,
     trendScore: 83,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.3,
   },
   {
     id: 'k15',
@@ -379,6 +407,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 78,
     relevanceScore: 77,
     trendScore: 75,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 7.8,
   },
   {
     id: 'k16',
@@ -388,6 +418,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 91,
     relevanceScore: 90,
     trendScore: 89,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.7,
   },
   {
     id: 'k17',
@@ -397,6 +429,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 83,
     relevanceScore: 82,
     trendScore: 80,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 8.1,
   },
   {
     id: 'k18',
@@ -406,6 +440,8 @@ export const MOCK_KEYWORDS: Keyword[] = [
     recencyScore: 79,
     relevanceScore: 78,
     trendScore: 77,
+    calculatedAt: formatISO(new Date()),
+    averageArticleRating: 7.9,
   },
 ]
 

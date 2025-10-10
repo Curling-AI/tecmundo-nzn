@@ -5,7 +5,7 @@ import * as RechartsPrimitive from 'recharts'
 import { cn } from '@/lib/utils'
 
 // Type definitions for chart payload
-interface ChartPayloadItem {
+export interface ChartPayloadItem {
   dataKey?: string
   name?: string
   value?: number | string
@@ -14,7 +14,7 @@ interface ChartPayloadItem {
   fill?: string
 }
 
-type ChartPayload = ChartPayloadItem[]
+export type ChartPayload = ChartPayloadItem[]
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
