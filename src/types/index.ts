@@ -60,10 +60,18 @@ export interface Source {
   country: string
   continent: string
   lastRead: string
+  createdAt: string
+  type: 'concorrente' | 'externa' | 'empresa'
 }
 
 export interface ArticleRating {
   id: string
   articleId: string
   rating: number
+}
+
+export interface Country {
+  id: number
+  name: string
+  continent: string
 }
