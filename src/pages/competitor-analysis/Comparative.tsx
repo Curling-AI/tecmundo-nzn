@@ -7,7 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartPayloadItem } from '@/components/ui/chart'
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartPayloadItem,
+} from '@/components/ui/chart'
 import {
   MOCK_COMPETITORS,
   MOCK_KEYWORD_COMPARISON_STRONG,
