@@ -7,13 +7,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartPayloadItem } from '@/components/ui/chart'
 import {
-  MOCK_COMPETITORS,
-  MOCK_KEYWORD_COMPARISON_STRONG,
-  MOCK_KEYWORD_COMPARISON_WEAK,
-} from '@/lib/mock-data'
+  ChartContainer,
+  ChartPayload,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+import { MOCK_KEYWORD_COMPARISON_STRONG, MOCK_KEYWORD_COMPARISON_WEAK } from '@/lib/mock-data'
 import { KeywordComparison } from '@/types'
+
+const MOCK_COMPETITORS = [
+  { id: 'canaltech', name: 'Canaltech' },
+  { id: 'tecmundo', name: 'TecMundo' },
+]
 
 const ComparisonChart = ({ title, data }: { title: string; data: KeywordComparison[] }) => (
   <div>
@@ -31,7 +37,11 @@ const ComparisonChart = ({ title, data }: { title: string; data: KeywordComparis
               axisLine={false}
               width={120}
             />
-            <ChartTooltip content={<ChartTooltipContent payload={data as ChartPayloadItem[]} />} />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent payload={[{ payload: data }] as unknown as ChartPayload} />
+              }
+            />
             <Bar dataKey="tecmundoScore" name="TecMundo" fill="var(--primary)" radius={4} />
             <Bar dataKey="competitorScore" name="Concorrente" fill="var(--secondary)" radius={4} />
           </BarChart>

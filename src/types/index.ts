@@ -24,10 +24,9 @@ export interface Keyword {
 }
 
 export interface Competitor {
-  id: string
   name: string
-  avgKeywordPosition: number
-  rankedKeywordsCount: number
+  avgScore: number
+  keywordsCount: number
 }
 
 export interface CompetitorArticle {
