@@ -117,21 +117,33 @@ export const SourceDetails = ({
     setIsLoading(true)
     try {
       if (isCreateMode) {
-        const newSource = await createSource({
+        const selectedCountry = countries.find((c) => c.name === data.country)
+
+        if (!selectedCountry) {
+          throw new Error('País não encontrado')
+        }
+
+        const createData = {
           url: data.url,
           type: data.type,
-          countryId: countries.find((c) => c.name === data.country)?.id,
-        })
+          countryId: selectedCountry.id,
+        }
+
+        const newSource = await createSource(createData)
 
         toast.success('Fonte criada com sucesso!')
         onSourceCreated?.(newSource)
-        onClose()
+        handleClose()
       } else if (source) {
-        const updatedSource = await updateSource(source.id, {
+        const selectedCountry = countries.find((c) => c.name === data.country)
+
+        const updateData = {
           url: data.url,
           type: data.type,
-          countryId: countries.find((c) => c.name === data.country)?.id,
-        })
+          countryId: selectedCountry?.id,
+        }
+
+        const updatedSource = await updateSource(source.id, updateData)
 
         toast.success('Fonte atualizada com sucesso!')
         setIsEditing(false)
@@ -182,7 +194,7 @@ export const SourceDetails = ({
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() => void handleSubmit(onSubmit)}
+                    onClick={handleSubmit(onSubmit)} // eslint-disable-line
                     disabled={isLoading}
                   >
                     {isLoading ? (
