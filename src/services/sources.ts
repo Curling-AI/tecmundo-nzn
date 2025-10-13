@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Source } from '@/types'
+import { Competitor, Source } from '@/types'
 
 interface CreateSourceData {
   url: string
@@ -25,6 +25,12 @@ interface dbSource {
       name: string
     }
   }
+}
+
+interface dbCompetitor {
+  url: string
+  avg_score: number
+  keyword_count: number
 }
 
 export const getSources = async (): Promise<Source[]> => {
@@ -174,4 +180,32 @@ export const updateSource = async (id: string, data: UpdateSourceData): Promise<
     lastRead: source.last_crawled_at,
     type: source.type,
   }
+}
+
+export const getCompetitorsRanking = async (
+  start_date: string,
+  end_date: string,
+): Promise<Competitor[]> => {
+  const { data, error } = (await supabase.rpc('competitors_ranking', {
+    p_start_date: start_date,
+    p_end_date: end_date,
+  })) as unknown as { data: dbCompetitor[]; error: Error | null }
+
+  if (error) {
+    console.error('Error fetching competitors ranking:', error)
+    throw error
+  }
+
+  return data.map((competitor: dbCompetitor) => ({
+    name: (() => {
+      const regex = /^https?:\/\/(?:www\.)?([^/]+)/i
+      const match = regex.exec(competitor.url)
+      if (!match) return competitor.url
+      const domain = match[1]
+      const domainWithoutTld = domain.replace(/\.com\.br$/, '.com').replace(/\.[^.]+$/, '')
+      return domainWithoutTld
+    })(),
+    avgScore: competitor.avg_score,
+    keywordsCount: competitor.keyword_count,
+  })) as Competitor[]
 }

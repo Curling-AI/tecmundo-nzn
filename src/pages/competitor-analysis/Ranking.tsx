@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -8,26 +8,32 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { MOCK_COMPETITORS } from '@/lib/mock-data'
 import { AppPagination } from '@/components/AppPagination'
 import { CompetitorRankingCard } from '@/components/CompetitorRankingCard'
+import { Competitor } from '@/types'
+import { getCompetitorsRanking } from '@/services/sources'
+import { useDateFilter } from '@/store/dateFilter'
 
 const ITEMS_PER_PAGE = 10
 
 const Ranking = () => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [competitors, setCompetitors] = useState<Competitor[]>([])
+  const { date } = useDateFilter()
 
-  const sortedCompetitors = useMemo(() => {
-    return [...MOCK_COMPETITORS].sort((a, b) => a.avgKeywordPosition - b.avgKeywordPosition)
-  }, [])
+  useEffect(() => {
+    getCompetitorsRanking(date?.from?.toISOString() ?? '', date?.to?.toISOString() ?? '')
+      .then(setCompetitors)
+      .catch(console.error)
+  }, [date])
 
   const paginatedCompetitors = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
     const endIndex = startIndex + ITEMS_PER_PAGE
-    return sortedCompetitors.slice(startIndex, endIndex)
-  }, [sortedCompetitors, currentPage])
+    return competitors.slice(startIndex, endIndex)
+  }, [competitors, currentPage])
 
-  const totalPages = Math.ceil(sortedCompetitors.length / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(competitors.length / ITEMS_PER_PAGE)
 
   return (
     <div className="space-y-6">
@@ -52,13 +58,13 @@ const Ranking = () => {
               </TableHeader>
               <TableBody>
                 {paginatedCompetitors.map((c, index) => (
-                  <TableRow key={c.id}>
+                  <TableRow key={c.name}>
                     <TableCell className="text-muted-foreground font-bold">
                       {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
                     </TableCell>
                     <TableCell className="font-medium">{c.name}</TableCell>
-                    <TableCell className="text-center">{c.avgKeywordPosition.toFixed(1)}</TableCell>
-                    <TableCell className="text-center">{c.rankedKeywordsCount}</TableCell>
+                    <TableCell className="text-center">{c.avgScore.toFixed(1)}</TableCell>
+                    <TableCell className="text-center">{c.keywordsCount}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -70,7 +76,7 @@ const Ranking = () => {
           <CardContent className="space-y-4 p-4">
             {paginatedCompetitors.map((c, index) => (
               <CompetitorRankingCard
-                key={c.id}
+                key={c.name}
                 competitor={c}
                 rank={(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
               />

@@ -16,11 +16,11 @@ export const CompetitorRankingCard = ({ competitor, rank }: CompetitorRankingCar
         </div>
         <div className="flex flex-col items-end gap-2 text-sm">
           <div className="text-right">
-            <p className="font-bold">{competitor.avgKeywordPosition.toFixed(1)}</p>
+            <p className="font-bold">{competitor.avgScore.toFixed(1)}</p>
             <p className="text-muted-foreground text-xs">Pos. Média</p>
           </div>
           <div className="text-right">
-            <p className="font-bold">{competitor.rankedKeywordsCount}</p>
+            <p className="font-bold">{competitor.keywordsCount}</p>
             <p className="text-muted-foreground text-xs">Keywords</p>
           </div>
         </div>

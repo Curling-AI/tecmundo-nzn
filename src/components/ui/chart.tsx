@@ -14,7 +14,7 @@ interface ChartPayloadItem {
   fill?: string
 }
 
-type ChartPayload = ChartPayloadItem[]
+export type ChartPayload = ChartPayloadItem[]
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: '', dark: '.dark' } as const
