@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartPayloadItem } from '@/components/ui/chart'
 import {
   MOCK_COMPETITORS,
   MOCK_KEYWORD_COMPARISON_STRONG,
@@ -31,7 +31,7 @@ const ComparisonChart = ({ title, data }: { title: string; data: KeywordComparis
               axisLine={false}
               width={120}
             />
-            <ChartTooltip content={<ChartTooltipContent payload={data} />} />
+            <ChartTooltip content={<ChartTooltipContent payload={data as ChartPayloadItem[]} />} />
             <Bar dataKey="tecmundoScore" name="TecMundo" fill="var(--primary)" radius={4} />
             <Bar dataKey="competitorScore" name="Concorrente" fill="var(--secondary)" radius={4} />
           </BarChart>
