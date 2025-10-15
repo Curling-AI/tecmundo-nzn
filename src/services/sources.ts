@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Competitor, Source } from '@/types'
+import { Competitor, SEOComparative, Source } from '@/types'
 
 interface CreateSourceData {
   url: string
@@ -31,6 +31,23 @@ interface dbCompetitor {
   url: string
   avg_score: number
   keyword_count: number
+}
+
+interface dbSEOComparative {
+  source: string
+  source_type: 'concorrente' | 'externa' | 'empresa'
+  score: number
+  errors: number
+  warnings: number
+  text_word_count: number
+  text_rate: number
+  ari: number
+  coleman_liau: number
+  dale_chall: number
+  flesch_kincaid: number
+  smog: number
+  desc_consistency: number
+  title_consistency: number
 }
 
 export const getSources = async (): Promise<Source[]> => {
@@ -208,4 +225,33 @@ export const getCompetitorsRanking = async (
     avgScore: competitor.avg_score,
     keywordsCount: competitor.keyword_count,
   })) as Competitor[]
+}
+
+export const getSEOComparative = async (start_date: string, end_date: string) => {
+  const { data, error } = (await supabase.rpc('get_seo_metrics_by_source_and_period', {
+    p_start_date: start_date,
+    p_end_date: end_date,
+  })) as unknown as { data: dbSEOComparative[]; error: Error | null }
+
+  if (error) {
+    console.error('Error fetching SEO comparative:', error)
+    throw error
+  }
+
+  return data.map((seo) => ({
+    source: seo.source,
+    sourceType: seo.source_type,
+    score: seo.score,
+    errors: seo.errors,
+    warnings: seo.warnings,
+    textWordCount: seo.text_word_count,
+    ari: seo.ari,
+    colemanLiau: seo.coleman_liau,
+    daleChall: seo.dale_chall,
+    fleschKincaid: seo.flesch_kincaid,
+    smog: seo.smog,
+    descConsistency: seo.desc_consistency,
+    titleConsistency: seo.title_consistency,
+    textRate: seo.text_rate,
+  })) as SEOComparative[]
 }

@@ -52,6 +52,23 @@ export interface KeywordComparison {
   competitorScore: number
 }
 
+export interface SEOComparative {
+  source: string
+  sourceType: 'concorrente' | 'externa' | 'empresa'
+  score: number
+  errors: number
+  warnings: number
+  textWordCount: number
+  textRate: number
+  ari: number
+  colemanLiau: number
+  daleChall: number
+  fleschKincaid: number
+  smog: number
+  descConsistency: number
+  titleConsistency: number
+}
+
 export interface Source {
   id: string
   url: string
