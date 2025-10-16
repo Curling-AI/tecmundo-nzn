@@ -66,15 +66,19 @@ const KeywordAnalysis = () => {
     setIsLoadingArticles(true)
     setSelectedKeyword(keywordName)
 
-    try {
-      const keywordArticles = await getArticlesByKeyword(keywordName)
-      setRelatedArticles(keywordArticles)
-    } catch (error) {
-      console.error('Erro ao carregar artigos:', error)
-      setRelatedArticles([])
-    } finally {
-      setIsLoadingArticles(false)
+    let count = 0
+    while (count < 3) {
+      try {
+        const keywordArticles = await getArticlesByKeyword(keywordName)
+        setRelatedArticles(keywordArticles)
+        break
+      } catch (error) {
+        console.error('Erro ao carregar artigos:', error)
+        setRelatedArticles([])
+        count++
+      }
     }
+    setIsLoadingArticles(false)
   }
 
   const handleBackToKeywords = () => {
