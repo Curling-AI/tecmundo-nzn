@@ -20,7 +20,7 @@ export const CompetitorArticleCard = ({ article, onClick }: CompetitorArticleCar
           </Badge>
         </div>
         <div className="text-muted-foreground flex items-center justify-between text-sm">
-          <span>{article.competitorName}</span>
+          <span>{article.source}</span>
           <span>
             {formatDistanceToNow(new Date(article.publishedAt), {
               addSuffix: true,
