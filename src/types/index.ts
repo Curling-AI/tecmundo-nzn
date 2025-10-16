@@ -32,18 +32,15 @@ export interface Competitor {
 export interface CompetitorArticle {
   id: string
   title: string
-  competitorName: string
+  source: string
+  url: string
   seoScore: number
   publishedAt: string
-  mainKeywords: string[]
-  // Includes all fields from Article for the details view
-  source: string
   country: string
   continent: string
-  url: string
   keywords: string[]
-  totalScore: number
-  averageScore: number
+  metrics: Record<string, number>
+  checks: Record<string, boolean>
 }
 
 export interface KeywordComparison {

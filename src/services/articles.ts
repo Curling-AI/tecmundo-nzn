@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase'
-import { Article, ArticleRating } from '@/types'
+import { Article, ArticleRating, CompetitorArticle } from '@/types'
 
 interface dbArticle {
   id: string
@@ -12,6 +12,34 @@ interface dbArticle {
   country: string
   continent: string
   source: string
+}
+
+interface dbSEOArticle {
+  id: string
+  title: string
+  feed_sources: {
+    url: string
+    countries?: {
+      name: string
+      continents?: {
+        name: string
+      }
+    }
+  }
+  article_keywords: {
+    keywords: {
+      keyword_text: string
+    }
+  }[]
+  url: string
+  published_at: string
+  seo_data: {
+    score: number
+    errors_count: number
+    warnings_count: number
+    metrics: Record<string, number>
+    checks: Record<string, boolean>
+  }[]
 }
 
 export const getArticles = async (
@@ -305,4 +333,54 @@ export const saveArticleRating = async (
     articleId,
     rating: rating,
   }
+}
+
+export const getSEOArticles = async (
+  from_date: string,
+  to_date: string,
+): Promise<CompetitorArticle[]> => {
+  const { data, error } = await supabase
+    .from('feed_items')
+    .select(
+      '*, seo_data(*), feed_sources(url, countries(name, continents(name))), article_keywords(keywords(keyword_text))',
+    )
+    .not('feed_sources', 'is', null)
+    .in('feed_sources.type', ['concorrente', 'empresa'])
+    .gte('published_at', from_date)
+    .lte('published_at', to_date)
+    .order('published_at', { ascending: false })
+
+  if (error || !data) {
+    console.error('Error fetching SEO articles:', error)
+    throw error
+  }
+
+  const filteredData = data.filter(
+    (article: dbSEOArticle) => article.seo_data && article.seo_data.length > 0,
+  ) as dbSEOArticle[]
+
+  return filteredData.map((article) => ({
+    id: article.id,
+    title: article.title,
+    source: (() => {
+      const regex = /^https?:\/\/(?:www\.)?([^/]+)/i
+      const match = regex.exec(article.feed_sources.url)
+      if (!match) return article.feed_sources.url
+      const domain = match[1]
+      const domainWithoutTld = domain.replace(/\.com\.br$/, '.com').replace(/\.[^.]+$/, '')
+      return domainWithoutTld
+    })(),
+    url: article.url,
+    seoScore: article.seo_data[0].score,
+    publishedAt: article.published_at,
+    country: article.feed_sources.countries?.name,
+    continent: article.feed_sources.countries?.continents?.name,
+    keywords: article.article_keywords.map((keyword) => keyword.keywords.keyword_text),
+    metrics: {
+      ...article.seo_data[0].metrics,
+      errors_count: article.seo_data[0].errors_count,
+      warnings_count: article.seo_data[0].warnings_count,
+    },
+    checks: article.seo_data[0].checks,
+  })) as CompetitorArticle[]
 }
